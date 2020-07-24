@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <windows.h>
+#include <conio.h>
+#define fOld "ATMdatabase.txt"
+#define fNew "ATMnewdatabase.txt"
+
 void gotoxy(int x,int y);
 void start();
 int i,j;
@@ -9,6 +12,7 @@ int op;
 int main_exit;
 void menu();
 void close();
+int ret;
 
 struct date{
     int month,day,year;
@@ -68,7 +72,7 @@ void box2()
 void addaccount(){
     int choice;
     FILE *ptr;
-    ptr=fopen("ATMdatabase.dat", "a+");
+    ptr=fopen("ATMdatabase.txt", "a+");
 
     num:
     system("cls");
@@ -83,6 +87,11 @@ void addaccount(){
 
     gotoxy(9,10);printf("MOBILE NUMBER:");
     gotoxy(9,11);scanf("%lf", &check.mobilenumber);
+
+    if(check.mobilenumber==0){
+        start();
+    }
+    else {
 
     gotoxy(9,13);printf("PASSWORD: ");
     gotoxy(9,14);scanf("%s", add.password);
@@ -109,9 +118,10 @@ void addaccount(){
             goto num;
             }
     }
+    add.mobilenumber=check.mobilenumber;
     system("cls");
     box();
-    add.mobilenumber=check.mobilenumber;
+
     gotoxy(8,4);printf("REGISTER YOUR NUMBER");
     gotoxy(7,5);printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
     gotoxy(7,26); printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
@@ -135,8 +145,11 @@ void addaccount(){
     gotoxy(7,23);scanf("%f", &add.amount);
     system("cls");
 
-    fprintf(ptr,"\n %s %s %s \n %lf \n %s \n %s \n %s \n %s\n %d/%d/%d\n %s \n%f",add.name.first_name,add.name.middle_name,add.name.last_name,add.mobilenumber, add.password, add.emailaddress, add.address, add.nationality,add.mdy.month,add.mdy.day,add.mdy.year,add.placeofbirth,add.amount);
+
+        fprintf(ptr,"\n %s %s %s \n %lf \n %s \n %s \n %s \n %s\n %d/%d/%d\n %s \n%f",add.name.first_name,add.name.middle_name,add.name.last_name,add.mobilenumber, add.password, add.emailaddress, add.address, add.nationality,add.mdy.month,add.mdy.day,add.mdy.year,add.placeofbirth,add.amount);
+
     fclose(ptr);
+
     box();
     gotoxy(8,4);printf("REGISTER YOUR NUMBER");
     gotoxy(7,5);printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
@@ -174,20 +187,20 @@ box();
     system("cls");
     if (main_exit==1)
         menu();
-    else if(main_exit==0)
+    else if(main_exit==2)
             close();
     else
         {
             printf("\nInvalid!\a");
             goto jumphere;
         }
-
+    }
 }
 
 void viewlist()
 {
     FILE *view;
-    view=fopen("ATMdatabase.dat","r");
+    view=fopen("ATMdatabase.txt","r");
     int test=0;
 
 
@@ -257,8 +270,8 @@ void edit(void)
     int choice,test=0;
     FILE *old,*newrec;
 
-    old=fopen("ATMdatabase.dat","r");
-    newrec=fopen("ATMnewdatabase.dat","w");
+    old=fopen("ATMdatabase.txt","r");
+    newrec=fopen("ATMnewdatabase.txt","w");
 
     box();
     gotoxy(10,5);printf("A-ToM MOBILE BANK");
@@ -270,7 +283,9 @@ void edit(void)
 
 
     while(fscanf(old,"\n %s %s %s \n %lf \n %s \n %s \n %s \n %s\n %d/%d/%d\n %s \n%f",add.name.first_name,add.name.middle_name,add.name.last_name,&add.mobilenumber, add.password, add.emailaddress, add.address, add.nationality,&add.mdy.month,&add.mdy.day,&add.mdy.year,add.placeofbirth,&add.amount)!=EOF)
-    {
+ {
+
+
         if (add.mobilenumber==upd.mobilenumber)
         {   test=1;
             system("cls");
@@ -424,9 +439,8 @@ void edit(void)
 
 fclose(old);
 fclose(newrec);
-remove("ATMdatabase.dat");
-rename("ATMnewdatabase.dat","ATMdatabase.dat");
-
+remove("ATMdatabase.txt");
+rename("ATMnewdatabase.txt","ATMdatabase.txt");
 
 if(test!=1)
         {   system("cls");
@@ -440,7 +454,7 @@ if(test!=1)
             gotoxy(10,15);printf("FOUND");
             fordelay(1000000000);
 
-            jumphere:
+        jumphere:
             system("cls");
             box();
 
@@ -455,30 +469,30 @@ if(test!=1)
 
               system("cls");
                  if (main_exit==1){
-                    fclose(old);
-                    fclose(newrec);
                     menu();
                  }
                 else if (main_exit==2){
-                    fclose(old);
-                    fclose(newrec);
                     edit();
                 }
                 else if(main_exit==3){
-
-                    fclose(old);
-                    fclose(newrec);
-                    remove("ATMdatabase.dat");
-                    rename("ATMnewdatabase.dat","ATMdatabase.dat");
-
                     close();
                 }
                 else
-                    {printf("\nInvalid!\a");
-                    goto jumphere;}
+                    {
+                     system("cls");
+                        box();
+                        gotoxy(9,6);printf("A-ToM MOBILE BANK");
+                        gotoxy(7,8);printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+                        gotoxy(7,26); printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+                        gotoxy(10,14);printf("INVALID.");
+                        fordelay(1000000000);
+                    goto jumphere;
+                    }
         }
     else
-        {       system("cls");
+        {
+
+             system("cls");
                 box();
                 gotoxy(10,5);printf("A-ToM MOBILE BANK");
                 gotoxy(7,7);printf("\xAF \xAF \xAF \xAF UPDATE \xAE \xAE \xAE \xAE");
@@ -494,15 +508,9 @@ if(test!=1)
     if (main_exit==1)
         menu();
     else if(main_exit==3){
-            fclose(old);
-            fclose(newrec);
-            remove("ATMdatabase.dat");
-            rename("ATMnewdatabase.dat","ATMdatabase.dat");
-            close();
+        close();
     }
     else if(main_exit==2){
-        fclose(old);
-        fclose(newrec);
         edit();
     }
     else
@@ -516,19 +524,15 @@ if(test!=1)
             fordelay(1000000000);
 
         }
+    }
+}
 
 
-fclose(old);
-fclose(newrec);
-remove("ATMdatabase.dat");
-rename("ATMnewdatabase.dat","ATMdatabase.dat");
-}
-}
 void transact(void)
 {   int choice,test=0;
     FILE *old,*newrec;
-    old=fopen("ATMdatabase.dat","r");
-    newrec=fopen("ATMnewdatabase.dat","w");
+    old=fopen("ATMdatabase.txt","r");
+    newrec=fopen("ATMnewdatabase.txt","w");
 
         system("cls");
         box();
@@ -613,12 +617,16 @@ void transact(void)
                     fprintf(newrec,"\n %s %s %s \n %lf \n %s \n %s \n %s \n %s\n %d/%d/%d\n %s \n%f",add.name.first_name,add.name.middle_name,add.name.last_name,add.mobilenumber, add.password, add.emailaddress, add.address, add.nationality,add.mdy.month,add.mdy.day,add.mdy.year,add.placeofbirth,add.amount);
               }
     }
+
     fclose(old);
     fclose(newrec);
-    remove("ATMdatabase.dat");
-    rename("ATMnewdatabase.dat","ATMdatabase.dat");
+    remove("ATMdatabase.txt");
+    rename("ATMnewdatabase.txt","ATMdatabase.txt");
+
     if(test!=1)
-    {
+    {   fclose(old);
+        fclose(newrec);
+
         gotoxy(9,13);printf("RECORD NOT FOUND.");
         jumphere:
         gotoxy(10,16);printf("[0] TRY AGAIN");
@@ -635,14 +643,14 @@ void transact(void)
     else if (main_exit==1){
         fclose(old);
         fclose(newrec);
+        remove(fOld);
+        rename(fNew,fOld);
         menu();
     }
     else if (main_exit==2)
         {
         fclose(old);
         fclose(newrec);
-        remove("ATMdatabase.dat");
-        rename("ATMnewdatabase.dat","ATMdatabase.dat");
         close();
         }
     else
@@ -654,7 +662,6 @@ void transact(void)
             gotoxy(7,26); printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
             gotoxy(10,14);printf("INVALID.");
             fordelay(1000000000);
-
         goto jumphere;
     }
 
@@ -665,33 +672,27 @@ void transact(void)
        gotoxy(7,23);printf(" [2] EXIT");
        gotoxy(7,24);printf(" ENTER: ");scanf("%d",&main_exit);
         system("cls");
-        if (main_exit==1)
-        {
-         fclose(old);
-         fclose(newrec);
+        if (main_exit==1){
+        fclose(old);
+        fclose(newrec);
          menu();
-        }
-        else
-        {   fclose(old);
-            fclose(newrec);
-            remove("ATMdatabase.dat");
-            rename("ATMnewdatabase.dat","ATMdatabase.dat");
-            close();
-        }
+            }
+        else{
+        fclose(old);
+        fclose(newrec);
+             close();
+            }
 
-}
-  fclose(old);
-   fclose(newrec);
-   remove("ATMdatabase.dat");
-   rename("ATMnewdatabase.dat","ATMdatabase.dat");
+    }
+
 }
 void removeaccount(void)
 {
     FILE *old,*newrec;
     int test=0;
 
-    old=fopen("ATMdatabase.dat","r");
-    newrec=fopen("ATMnewdatabase.dat","w");
+    old=fopen("ATMdatabase.txt","r");
+    newrec=fopen("ATMnewdatabase.txt","w");
         system("cls");
         box();
         gotoxy(10,5);printf("A-ToM MOBILE BANK");
@@ -723,6 +724,7 @@ void removeaccount(void)
             }
    }
 
+
    if(test==0)
         {
             system("cls");
@@ -748,22 +750,34 @@ void removeaccount(void)
                 gotoxy(11,16); printf("ENTER: ");scanf("%d",&main_exit);
 
                  if (main_exit==1){
-                    fclose(old);
-                    fclose(newrec);
+                          fclose(old);
+                        fclose(newrec);
+                        remove(fOld);
+                        rename(fNew,fOld);
                     menu();
                  }
                 else if (main_exit==2){
-                    fclose(old);
-                    fclose(newrec);
-                    remove("ATMdatabase.dat");
-                    rename("ATMnewdatabase.dat","ATMdatabase.dat");
+                        fclose(old);
+                        fclose(newrec);
+                        remove(fOld);
+                        rename(fNew,fOld);
                     close();
                 }
-                else if(main_exit==0)
-                    removeaccount();
+                else if(main_exit==0){
+                            fclose(old);
+                            fclose(newrec);
+                            removeaccount();
+                }
                 else
-                    {printf("\nInvalid!\a");
-                    goto erase_invalid;}
+                    {   system("cls");
+                        box();
+                        gotoxy(9,6);printf("A-ToM MOBILE BANK");
+                        gotoxy(7,8);printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+                        gotoxy(7,26); printf("\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+                        gotoxy(10,14);printf("INVALID.");
+                        fordelay(1000000000);
+                        goto erase_invalid;
+                    }
         }
     else
         {
@@ -778,28 +792,30 @@ void removeaccount(void)
 
         system("cls");
             if (main_exit==1){
-            menu();
+                            fclose(old);
+                            fclose(newrec);
+                            remove(fOld);
+                            rename(fNew,fOld);
+                    menu();
             }
             else{
-                fclose(old);
-                fclose(newrec);
-                remove("ATMdatabase.dat");
-                rename("ATMnewdatabase.dat","ATMdatabase.dat");
-                close();
+                        fclose(old);
+                        fclose(newrec);
+                        remove(fOld);
+                        rename(fNew,fOld);
+                    close();
+                }
+
         }
 
 }
-    fclose(old);
-   fclose(newrec);
-   remove("ATMdatabase.dat");
-   rename("ATMnewdatabase.dat","ATMdatabase.dat");
-}
+
 void see(void)
 {
     FILE *ptr;
     int test=0;
     int choice;
-    ptr=fopen("ATMdatabase.dat","r");
+    ptr=fopen("ATMdatabase.txt","r");
 
     system("cls");
         box();
@@ -850,12 +866,14 @@ void see(void)
             int op;
             gotoxy(7,25);printf(" [ 1 ] MAIN MENU");
             scanf("%d",&op);
-            if(op==1)
+            if(op==1){
+             fclose(ptr);
                menu();
+            }
             }
 
         }
-        fclose(ptr);
+
 
     }
     else if (choice==2)
@@ -864,7 +882,8 @@ void see(void)
         while (fscanf(ptr,"\n %s %s %s \n %lf \n %s \n %s \n %s \n %s\n %d/%d/%d\n %s \n%f",add.name.first_name,add.name.middle_name,add.name.last_name,&add.mobilenumber, add.password, add.emailaddress, add.address, add.nationality,&add.mdy.month,&add.mdy.day,&add.mdy.year,add.placeofbirth,&add.amount)!=EOF)
        {
             if(strcmpi(add.emailaddress,check.emailaddress)==0)
-            {   system("cls");
+            {
+
             test=1;
            system("cls");
             box();
@@ -886,18 +905,20 @@ void see(void)
            gotoxy(7,20);printf("%s", add.address);
            gotoxy(7,21);printf("%d/%d/%d", add.mdy.month,add.mdy.day,add.mdy.year);
            gotoxy(7,22);printf("%s", add.placeofbirth);
-           int op;
+
+            int op;
             gotoxy(7,25);printf(" [ 1 ] MAIN MENU");
             scanf("%d",&op);
-            if(op==1)
+            if(op==1){
+              fclose(ptr);
                menu();
-
+            }
             }
         }
-        fclose(ptr);
+
     }
 
-
+fclose(ptr);
      if(test!=1)
         {
             system("cls");
@@ -923,12 +944,19 @@ void see(void)
                 gotoxy(11,16); printf("ENTER: ");scanf("%d",&main_exit);
 
               system("cls");
-                 if (main_exit==1)
+                 if (main_exit==1){
+                  fclose(ptr);
                     menu();
+                 }
                 else if (main_exit==2)
-                    close();
+                    {   fclose(ptr);
+                        close();
+                    }
                 else if(main_exit==0)
+                {
+                    fclose(ptr);
                     see();
+                }
                 else
                     {
                        system("cls");
@@ -952,14 +980,15 @@ void see(void)
         gotoxy(11,14); printf("ENTER: ");scanf("%d",&main_exit);
 
         if (main_exit==1)
-        {
+        {   fclose(ptr);
             system("cls");
             menu();
         }
 
         else
-           {
+           {fclose(ptr);
             system("cls");
+
             close();
             }
 
@@ -1021,7 +1050,7 @@ void login(void)
 {
 int i;
 FILE *ptr;
-  ptr=fopen("ATMdatabase.dat","r");
+  ptr=fopen("ATMdatabase.txt","r");
         system("cls");
         box();
         gotoxy(10,5);printf("WELCOME TO A-ToM");
@@ -1046,7 +1075,7 @@ FILE *ptr;
                         gotoxy(11+i,14);printf("\xDB");
                     }
                system("cls");
-
+                fclose(ptr);
                 menu();
             }
         }
@@ -1058,6 +1087,7 @@ start();
 }
 
 void start(){
+    system("cls");
     box();
 
       gotoxy(10,5);printf("WELCOME TO A-ToM");
@@ -1107,6 +1137,7 @@ void close(){
                         fordelay(100000000);
                         gotoxy(11+i,14);printf("\xDB");
                     }
+start();
 
 }
 COORD coord={0,0};
